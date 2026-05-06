@@ -1,0 +1,36 @@
+# Python 编译缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 构建输出
+build/
+dist/
+Output/
+*.spec
+installer.iss
+
+# 数据库
+db/
+db_backup/
+
+# 知识库缓存
+knowledge-base/*.pkl
+knowledge-base/*.npz
+knowledge-base/*.json
+knowledge-base/vector-db/
+
+# 报价输出
+quote/*.xlsx
+
+# IDE
+.vscode/
+.idea/
+
+# 环境
+.env
+*.egg-info/
+
+# 系统
+Thumbs.db
+.DS_Store

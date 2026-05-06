@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>天翼云等保报价系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- ====== 顶栏 ====== -->
+    <header>
+        <button id="menuBtn" class="menu-btn" aria-label="打开产品列表">☰</button>
+        <h1>天翼云等保报价系统</h1>
+    </header>
+
+    <!-- ====== 侧边抽屉 ====== -->
+    <div id="drawerOverlay" class="drawer-overlay"></div>
+    <nav id="drawer" class="drawer">
+        <div class="drawer-header">
+            <h2>安全产品分类</h2>
+            <button id="drawerClose" class="close-btn">✕</button>
+        </div>
+        <div id="drawerContent" class="drawer-content">
+            <div class="loader">加载中...</div>
+        </div>
+    </nav>
+
+    <!-- ====== 主内容区 ====== -->
+    <main>
+        <!-- 年数选择 -->
+        <section class="years-section">
+            <label>报价年数：</label>
+            <div class="years-group" id="yearsGroup">
+                <button class="year-btn active" data-years="1">1年</button>
+                <button class="year-btn" data-years="2">2年</button>
+                <button class="year-btn" data-years="3">3年</button>
+            </div>
+        </section>
+
+        <!-- 已选产品 -->
+        <section class="selected-section">
+            <div class="section-header">
+                <span>已选产品</span>
+                <span id="selectedCount" class="badge">0</span>
+            </div>
+            <div id="selectedList" class="selected-list">
+                <div class="empty-hint">请点击左上角 ☰ 添加产品</div>
+            </div>
+        </section>
+
+        <!-- 费用汇总 -->
+        <section class="summary-section">
+            <div class="section-header" id="summaryToggle">
+                <span>费用汇总</span>
+                <span id="summaryArrow">▾</span>
+            </div>
+            <div id="summaryBody" class="summary-body">
+                <div class="summary-row"><span class="sl">产品数量</span><span id="sCount" class="sr">0</span></div>
+                <div class="summary-row"><span class="sl">标准价（1月）</span><span id="sMonthly" class="sr">¥0.00</span></div>
+                <div class="summary-row"><span class="sl">标准价（<span id="sYearLabel">1</span>年）</span><span id="sYearlyTotal" class="sr">¥0.00</span></div>
+                <div class="summary-row highlight"><span class="sl">折扣价（<span id="sDiscLabel">1</span>年）</span><span id="sDiscounted" class="sr">¥0.00</span></div>
+                <div class="summary-row"><span class="sl">4.5折结算价</span><span id="s45" class="sr">¥0.00</span></div>
+                <div class="summary-row"><span class="sl">5.5折结算价</span><span id="s55" class="sr">¥0.00</span></div>
+            </div>
+        </section>
+
+        <!-- 操作按钮 -->
+        <section class="actions-section">
+            <button id="genBtn" class="btn btn-primary" onclick="generateQuote()">📄 生成报价</button>
+            <button id="clearBtn" class="btn btn-secondary" onclick="clearAll()">🗑 清空全部</button>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
