@@ -38,10 +38,17 @@ jobs:
 
       - name: 构建 APK
         run: |
+          # 创建并接受 Android SDK 许可证
+          mkdir -p /home/user/.buildozer/android/platform/android-sdk/licenses
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > /home/user/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> /home/user/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+          
           docker run --rm \
             -v ${{ github.workspace }}:/home/user/hostcwd \
+            -v /home/user/.buildozer:/home/user/.buildozer \
             kivy/buildozer:latest \
             android debug
+
 
 
 
