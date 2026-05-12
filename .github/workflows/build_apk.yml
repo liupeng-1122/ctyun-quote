@@ -10,6 +10,18 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
+      - name: 安装系统依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3 python3-pip \
+            openjdk-17-jdk \
+            wget unzip git zip \
+            autoconf libtool pkg-config \
+            zlib1g-dev \
+            libncurses5-dev libncursesw5-dev libtinfo5 \
+            cmake libffi-dev libssl-dev
+
       - name: 创建应用图标
         run: |
           mkdir -p icons
@@ -36,22 +48,29 @@ jobs:
           print('图标已创建')
           "
 
+      - name: 设置 Android SDK
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          mkdir -p $ANDROID_HOME
+          cd $ANDROID_HOME
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip
+          mkdir -p cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
+
+      - name: 安装 Python 依赖
+        run: |
+          pip3 install --upgrade pip
+          pip3 install buildozer cython
+          pip3 install kivy
+
       - name: 构建 APK
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            zaidalyafei/android-sdk \
-            bash -c "
-              mkdir -p ~/.android
-              echo '24333f8a63b6825ea9c5514f83c2829b004d1fee' > ~/.android/android-sdk-license
-              echo '84831b9409646a918e30573bab4c9c91346d8abd' >> ~/.android/android-sdk-license
-              pip install buildozer
-              buildozer android debug
-            "
-
-
-
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0
+          buildozer android debug
 
       - name: 上传 APK
         uses: actions/upload-artifact@v4
