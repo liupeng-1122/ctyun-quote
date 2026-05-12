@@ -14,39 +14,52 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            python3 python3-pip \
+            python3 \
+            python3-pip \
+            python3-venv \
             openjdk-17-jdk \
-            wget unzip git zip \
-            autoconf libtool pkg-config \
+            wget \
+            unzip \
+            git \
+            zip \
+            autoconf \
+            libtool \
+            pkg-config \
             zlib1g-dev \
-            libncurses5-dev libncursesw5-dev libtinfo5 \
-            cmake libffi-dev libssl-dev
+            libncurses5-dev \
+            libncursesw5-dev \
+            libncurses6 \
+            cmake \
+            libffi-dev \
+            libssl-dev
 
       - name: 创建应用图标
         run: |
           mkdir -p icons
-          python3 -c "
-          import struct, zlib
-          def create_png(path, w, h, r, g, b):
-              raw = b''
-              for y in range(h):
-                  raw += b'\x00'
-                  for x in range(w):
-                      raw += bytes([r, g, b, 255])
-              compressed = zlib.compress(raw)
-              def chunk(ctype, data):
-                  c = ctype + data
-                  return struct.pack('>I', len(data)) + c + struct.pack('>I', zlib.crc32(c) & 0xffffffff)
-              ihdr = struct.pack('>IIBBBBB', w, h, 8, 2, 0, 0, 0)
-              png = b'\x89PNG\r\n\x1a\n'
-              png += chunk(b'IHDR', ihdr)
-              png += chunk(b'IDAT', compressed)
-              png += chunk(b'IEND', b'')
-              with open(path, 'wb') as f:
-                  f.write(png)
-          create_png('icons/icon.png', 192, 192, 44, 95, 138)
-          print('图标已创建')
-          "
+          python3 << 'PYTHON'
+import struct, zlib
+
+def create_png(path, w, h, r, g, b):
+    raw = b''
+    for y in range(h):
+        raw += b'\x00'
+        for x in range(w):
+            raw += bytes([r, g, b, 255])
+    compressed = zlib.compress(raw)
+    def chunk(ctype, data):
+        c = ctype + data
+        return struct.pack('>I', len(data)) + c + struct.pack('>I', zlib.crc32(c) & 0xffffffff)
+    ihdr = struct.pack('>IIBBBBB', w, h, 8, 2, 0, 0, 0)
+    png = b'\x89PNG\r\n\x1a\n'
+    png += chunk(b'IHDR', ihdr)
+    png += chunk(b'IDAT', compressed)
+    png += chunk(b'IEND', b'')
+    with open(path, 'wb') as f:
+        f.write(png)
+
+create_png('icons/icon.png', 192, 192, 44, 95, 138)
+print('图标已创建')
+PYTHON
 
       - name: 设置 Android SDK
         run: |
@@ -56,7 +69,7 @@ jobs:
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
           unzip -q cmdline-tools.zip
           mkdir -p cmdline-tools/latest
-          mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+          mv cmdline-tools/bin cmdline-tools/lib cmdline-tools/NOTICE.txt cmdline-tools/source.properties cmdline-tools/latest/ 2>/dev/null || true
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
 
