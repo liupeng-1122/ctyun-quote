@@ -39,9 +39,9 @@ jobs:
       - name: 构建 APK
         run: |
           docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace \
-            -e BUILDOZER_ALLOW_ROOT=1 \
             kivy/buildozer:latest \
-            buildozer android debug
+            bash -c "yes | buildozer android debug"
+
 
       - name: 上传 APK
         uses: actions/upload-artifact@v4
