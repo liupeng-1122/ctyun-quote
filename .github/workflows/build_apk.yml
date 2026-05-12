@@ -40,7 +40,7 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/home/user/hostcwd \
-            -u user \
+            --user 1000:1000 \
             kivy/buildozer:latest \
             bash -c "
               mkdir -p /home/user/.android
@@ -49,6 +49,7 @@ jobs:
               echo 'd975f751698a77b662f1254ddbeed3901e976f5a' >> /home/user/.android/android-sdk-license
               buildozer android debug
             "
+
 
 
       - name: 上传 APK
