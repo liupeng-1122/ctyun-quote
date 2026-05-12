@@ -39,16 +39,17 @@ jobs:
       - name: 构建 APK
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/home/user/hostcwd \
-            --user 1000:1000 \
-            kivy/buildozer:latest \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            zaidalyafei/android-sdk \
             bash -c "
-              mkdir -p /home/user/.android
-              echo '24333f8a63b6825ea9c5514f83c2829b004d1fee' > /home/user/.android/android-sdk-license
-              echo '84831b9409646a918e30573bab4c9c91346d8abd' >> /home/user/.android/android-sdk-license
-              echo 'd975f751698a77b662f1254ddbeed3901e976f5a' >> /home/user/.android/android-sdk-license
+              mkdir -p ~/.android
+              echo '24333f8a63b6825ea9c5514f83c2829b004d1fee' > ~/.android/android-sdk-license
+              echo '84831b9409646a918e30573bab4c9c91346d8abd' >> ~/.android/android-sdk-license
+              pip install buildozer
               buildozer android debug
             "
+
 
 
 
