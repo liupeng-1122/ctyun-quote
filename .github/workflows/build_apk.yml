@@ -38,9 +38,11 @@ jobs:
 
       - name: 构建 APK
         run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace \
+          docker run --rm \
+            -v ${{ github.workspace }}:/home/user/hostcwd \
             kivy/buildozer:latest \
-            bash -c "yes | buildozer android debug"
+            android debug
+
 
 
       - name: 上传 APK
